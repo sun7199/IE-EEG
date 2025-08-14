@@ -27,7 +27,7 @@ tmin = -0.2
 tmax = 1.0
 whiten = True
 
-project_dir = '/home/yueming/Data/Things-EEG2'
+project_dir = '/home/tlff97/Data/Things-EEG2'
 
 if whiten:
     save_dir = os.path.join(project_dir,
@@ -188,7 +188,7 @@ del whitened_test
 
 # 'img': duplicated_images,
 # 'label': label,
-img_directory = f'/home/yueming/Data/Things-EEG2/Image_set/test_images'
+img_directory = f'/home/tlff97/Data/Things-EEG2/Image_set/test_images'
 all_folders = [d for d in os.listdir(img_directory) if os.path.isdir(os.path.join(img_directory, d))]
 all_folders.sort()
 images = []
@@ -259,7 +259,7 @@ for i in range(len(np.unique(img_cond))):
     
 del ordered_data
 
-img_directory = f'/home/yueming/Data/Things-EEG2/Image_set/training_images'
+img_directory = f'/home/tlff97/Data/Things-EEG2/Image_set/training_images'
 all_folders = [d for d in os.listdir(img_directory) if os.path.isdir(os.path.join(img_directory, d))]
 all_folders.sort()
 images = []  
