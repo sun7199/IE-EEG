@@ -98,14 +98,7 @@ class EEGDataset(Dataset):
             }
 
         self.c = config['c']
-        if self.config['data']['uncertainty_aware']:
-            self.blur_transform = {}
-            for shift,tag in zip([-self.c,0,self.c],['low','medium','high']):
-                blur_param = config['data']['blur_type']
-                blur_param['params']['blur_kernel_size'] = blur_param['params']['blur_kernel_size']+shift
-                self.blur_transform[tag] = instantiate_from_config(blur_param)
-        else:
-            self.blur_transform = instantiate_from_config(config['data']['blur_type'])
+        self.blur_transform = instantiate_from_config(config['data']['blur_type'])
         process_term = [transforms.ToTensor(), transforms.Normalize(mean=(0.48145466, 0.4578275, 0.40821073), std=(0.26862954, 0.26130258, 0.27577711))] #transforms.Resize(pretrain_map[self.model_type]['resize']), 
         self.process_transform = transforms.Compose(process_term)
 
@@ -121,13 +114,7 @@ class EEGDataset(Dataset):
             for param in self.vlmodel.parameters():
                 param.requires_grad = False
             self.vlmodel.eval()
-            if self.config['data']['uncertainty_aware']:
-                self.img_features = {}
-                for tag in ['low','medium','high']:
-                    self.img_features[tag] = self.ImageEncoder(self.loaded_data[0]['img'],self.blur_transform[tag])
-                self.img_features['avg'] = {k: (sum(self.img_features[tag][k] for tag in ['low', 'medium', 'high']) / 3) for k in self.img_features['medium']}
-            else:
-                self.img_features = self.ImageEncoder(self.loaded_data[0]['img'])
+            self.img_features = self.ImageEncoder(self.loaded_data[0]['img'])
             self.text_features = self.Textencoder(self.loaded_data[0]['text'])
             torch.save({
                 'text_features': self.text_features,
@@ -227,19 +214,8 @@ class EEGDataset(Dataset):
     
         match_label = self.match_label[index]
         
-        if self.config['data']['uncertainty_aware']:
-            if self.mode == 'train':
-                if match_label==0:
-                    tag='low'
-                elif match_label==2:
-                    tag='high'
-                else:
-                   tag='medium'
-            else:
-                tag='medium'
-            img_features = self.img_features[tag][img_path]
-        else:
-            img_features = self.img_features[img_path]
+        
+        img_features = self.img_features[img_path]
 
         text =  f"This is a {self.loaded_data[subject]['text'][trial_index]}."
         text_features = self.text_features[self.loaded_data[subject]['text'][trial_index]]
