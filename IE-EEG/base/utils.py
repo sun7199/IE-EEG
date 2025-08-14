@@ -115,7 +115,7 @@ def extract_subfolder_names(folder_path):
         list: A list of modified subfolder names.
     """
     # Load the metadata with correct separator
-    metadata_path = "/home/yueming/github/Uncertainty-aware-Blur-Prior/concepts-metadata_things.tsv"
+    metadata_path = "/home/tlff97/github/THINGS/concepts-metadata_things.tsv"
     metadata = pd.read_csv(metadata_path, sep='\t')
 
     # Initialize the result dictionary
@@ -139,7 +139,7 @@ def extract_subfolder_names(folder_path):
 
 
 def split_categories():
-    metadata_path = "/home/yueming/github/Uncertainty-aware-Blur-Prior/concepts-metadata_things.tsv"
+    metadata_path = "/home/tlff97/github/THINGS/concepts-metadata_things.tsv"
     metadata = pd.read_csv(metadata_path, sep='\t')
 
     # Initialize the result dictionary
