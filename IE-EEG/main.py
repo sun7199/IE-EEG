@@ -74,29 +74,28 @@ class PLModel(pl.LightningModule):
         eeg_loss, img_loss, logits_per_image = self.criterion(eeg_z, img_z, logit_scale)
         total_loss = (eeg_loss.mean() + img_loss.mean()) / 2
 
-        if self.config['data']['uncertainty_aware']:
-            diagonal_elements = torch.diagonal(logits_per_image).cpu().detach().numpy()
-            gamma = self.gamma
+       
+        diagonal_elements = torch.diagonal(logits_per_image).cpu().detach().numpy()
+        gamma = self.gamma
 
-            batch_sim = gamma * diagonal_elements + (1 - gamma) * self.sim[idx]
-            
-            mean_sim = np.mean(batch_sim)
-            std_sim = np.std(batch_sim, ddof=1)
-            match_label = np.ones_like(batch_sim)
-            z_alpha_2 = norm.ppf(1 - self.alpha / 2)
+        batch_sim = gamma * diagonal_elements + (1 - gamma) * self.sim[idx]
+        
+        mean_sim = np.mean(batch_sim)
+        std_sim = np.std(batch_sim, ddof=1)
+        match_label = np.ones_like(batch_sim)
+        z_alpha_2 = norm.ppf(1 - self.alpha / 2)
 
-            lower_bound = mean_sim -z_alpha_2 * std_sim
-            upper_bound = mean_sim +z_alpha_2 * std_sim
+        lower_bound = mean_sim -z_alpha_2 * std_sim
+        upper_bound = mean_sim +z_alpha_2 * std_sim
 
-            match_label[diagonal_elements > upper_bound] = 0
-            match_label[diagonal_elements < lower_bound] = 2
+        match_label[diagonal_elements > upper_bound] = 0
+        match_label[diagonal_elements < lower_bound] = 2
 
-            self.sim[idx] = batch_sim
-            self.match_label[idx] = match_label
-           
-            loss = total_loss
-        else:
-            loss = total_loss
+        self.sim[idx] = batch_sim
+        self.match_label[idx] = match_label
+       
+        loss = total_loss
+    
         return eeg_z, img_z, loss
     
     def training_step(self, batch, batch_idx):
@@ -324,7 +323,6 @@ def main():
     trainer = Trainer(log_every_n_steps=10, strategy=DDPStrategy(find_unused_parameters=False),callbacks=[early_stop_callback, checkpoint_callback],max_epochs=config['train']['epoch'], devices=[device],accelerator='cuda',logger=logger)
     print(trainer.logger.log_dir)
 
-    ckpt_path = "/home/yueming/github/Uncertainty-aware-Blur-Prior/exp/intra-subject_ubp_EEGProjectLayer_RN50/sub-10_seed0/checkpoints/last-v10.ckpt"
     trainer.fit(pl_model, train_dataloaders=train_loader, val_dataloaders=val_loader)
 
     if config['exp_setting'] == 'inter-subject':
