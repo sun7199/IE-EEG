@@ -57,7 +57,7 @@ train_label = []
 
 # sub 1 7 10 is good!
 def load_sub(nSub):
-    eeg_data_path = '/home/yueming/Data/Things-EEG2/Preprocessed_data_250Hz/'
+    eeg_data_path = '/home/tlff97/Data/Things-EEG2/Preprocessed_data_250Hz/'
 
     train_data = np.load(eeg_data_path + '/sub-' + format(nSub, '02') + '/preprocessed_eeg_training.npy', allow_pickle=True)
     train_data = train_data['preprocessed_eeg_data']
