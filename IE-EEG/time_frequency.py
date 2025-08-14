@@ -140,8 +140,6 @@ fig.colorbar(im3, cax=cax)
 # # Add some padding between the subplots
 # plt.subplots_adjust(wspace=0.4)
 
-plt.savefig('/home/yueming/github/Uncertainty-aware-Blur-Prior/pic/time_freq.svg', dpi=300)
-
 
 
 # fig, ax = plt.subplots(figsize=(6, 6))
