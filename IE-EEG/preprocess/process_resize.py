@@ -2,8 +2,8 @@ import os
 from PIL import Image
 from torchvision import transforms
 
-data_dir = '/home/yueming/Data/Things-EEG2/Image_set'
-save_dir = '/home/yueming/Data/Things-EEG2/Image_set_Resize'
+data_dir = '/home/tlff97/Data/Things-EEG2/Image_set'
+save_dir = '/home/tlff97/Data/Things-EEG2/Image_set_Resize'
 os.makedirs(save_dir,exist_ok=True)
 image_paths = []
 for root, dirs, files in os.walk(data_dir):
